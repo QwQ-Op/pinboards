@@ -74,6 +74,7 @@ document.getElementById("json2-btn").addEventListener("click", () => loadGallery
 function openSlideshow(idx) {
   currentIndex = idx;
   updateSlide();
+  document.getElementById("photoset-link").href = galleryData[currentIndex].photoset;
   slideshowOverlay.style.display = "flex";
 }
 
@@ -84,10 +85,12 @@ function updateSlide() {
 prevBtn.addEventListener("click", () => {
   currentIndex = (currentIndex - 1 + galleryData.length) % galleryData.length;
   updateSlide();
+  document.getElementById("photoset-link").href = galleryData[currentIndex].photoset;
 });
 nextBtn.addEventListener("click", () => {
   currentIndex = (currentIndex + 1) % galleryData.length;
   updateSlide();
+  document.getElementById("photoset-link").href = galleryData[currentIndex].photoset;
 });
 closeSlideBtn.addEventListener("click", () => {
   slideshowOverlay.style.display = "none";
