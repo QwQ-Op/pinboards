@@ -66,3 +66,27 @@ html,body { margin:0; padding:0; background:var(--bg); color:var(--text); font-f
 @media (hover:none) {
   .btn { padding:10px 14px; }
 }
+
+/* Close button (floating X in slideshow) */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background 0.2s ease;
+}
+
+.close-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
