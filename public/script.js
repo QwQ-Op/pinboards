@@ -112,44 +112,50 @@ slideshowOverlay.addEventListener("click", (e) => {
 let isZoomed = false;
 let startX = 0, startY = 0;
 let currentX = 0, currentY = 0;
+let currentZoom = 1; 
 
 slideshowImg.addEventListener("dblclick", () => {
-  if (!isZoomed) {
+  if (currentZoom === 1) {
+    currentZoom = 2;
     slideshowImg.style.transform = "scale(2)";
     isZoomed = true;
   } else {
+    currentZoom = 1;
     slideshowImg.style.transform = "scale(1) translate(0, 0)";
     isZoomed = false;
     currentX = currentY = 0;
   }
 });
+
+
 /* ---------------- Pinch Zoom (touch) ---------------- */
 let initialDistance = 0;
-let pinchScale = 1;
+let pinchStartZoom = 1;
+
+function getDistance(touches) {
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
 
 slideshowImg.addEventListener("touchstart", (e) => {
   if (e.touches.length === 2) {
-    // two fingers = pinch gesture
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    initialDistance = Math.sqrt(dx * dx + dy * dy);
+    initialDistance = getDistance(e.touches);
+    pinchStartZoom = currentZoom;
   }
 });
 
 slideshowImg.addEventListener("touchmove", (e) => {
   if (e.touches.length === 2) {
-    e.preventDefault(); // stop page zoom
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    e.preventDefault();
+    const distance = getDistance(e.touches);
+    const scaleChange = distance / initialDistance;
+    currentZoom = Math.min(Math.max(pinchStartZoom * scaleChange, 1), 5); // clamp 1–5×
 
-    if (initialDistance > 0) {
-      pinchScale = distance / initialDistance;
-      slideshowImg.style.transform = `scale(${pinchScale}) translate(${currentX / 2}px, ${currentY / 2}px)`;
-      isZoomed = pinchScale > 1.1; // treat >1.1 as zoomed
-    }
+    slideshowImg.style.transform = `scale(${currentZoom}) translate(${currentX / currentZoom}px, ${currentY / currentZoom}px)`;
+    isZoomed = currentZoom > 1.01;
   }
-});
+}, { passive: false });
 
 // ✅ Pan drag (mouse)
 slideshowImg.addEventListener("mousedown", (e) => {
@@ -160,7 +166,7 @@ slideshowImg.addEventListener("mousedown", (e) => {
   const onMouseMove = (ev) => {
     currentX = ev.clientX - startX;
     currentY = ev.clientY - startY;
-    slideshowImg.style.transform = `scale(2) translate(${currentX / 2}px, ${currentY / 2}px)`;
+    slideshowImg.style.transform = `scale(${currentZoom}) translate(${currentX / currentZoom}px, ${currentY / currentZoom}px)`;
   };
 
   const onMouseUp = () => {
@@ -183,7 +189,7 @@ slideshowImg.addEventListener("touchstart", (e) => {
     const t = ev.touches[0];
     currentX = t.clientX - startX;
     currentY = t.clientY - startY;
-    slideshowImg.style.transform = `scale(2) translate(${currentX / 2}px, ${currentY / 2}px)`;
+    slideshowImg.style.transform = `scale(${currentZoom}) translate(${currentX / currentZoom}px, ${currentY / currentZoom}px)`;
   };
 
   const onTouchEnd = () => {
