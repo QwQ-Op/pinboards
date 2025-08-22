@@ -93,15 +93,22 @@ closeSlideBtn.addEventListener("click", () => {
   slideshowOverlay.style.display = "none";
 });
 
-// Tap left/right on the dark background to navigate (ignore image & buttons)
+// ✅ Tap left/right on background to navigate
 slideshowOverlay.addEventListener("click", (e) => {
   if (e.target === slideshowImg || e.target.closest("button")) return;
   const rect = slideshowOverlay.getBoundingClientRect();
-  if (e.clientX - rect.left < rect.width / 2) prevBtn.click(); else nextBtn.click();
+  const clickX = e.clientX - rect.left;
+  if (clickX < rect.width / 2) {
+    prevBtn.click();
+  } else {
+    nextBtn.click();
+  }
 });
 
 /* ---------------- Zoom + Pan ---------------- */
-let isZoomed = false, startX = 0, startY = 0, currentX = 0, currentY = 0;
+let isZoomed = false;
+let startX = 0, startY = 0;
+let currentX = 0, currentY = 0;
 
 slideshowImg.addEventListener("dblclick", () => {
   if (!isZoomed) {
@@ -109,42 +116,51 @@ slideshowImg.addEventListener("dblclick", () => {
     isZoomed = true;
   } else {
     slideshowImg.style.transform = "scale(1) translate(0, 0)";
-    isZoomed = false; currentX = currentY = 0;
+    isZoomed = false;
+    currentX = currentY = 0;
   }
 });
 
+// ✅ Pan drag (mouse)
 slideshowImg.addEventListener("mousedown", (e) => {
   if (!isZoomed) return;
   startX = e.clientX - currentX;
   startY = e.clientY - currentY;
-  function onMove(ev) {
+
+  const onMouseMove = (ev) => {
     currentX = ev.clientX - startX;
     currentY = ev.clientY - startY;
-    slideshowImg.style.transform = `scale(2) translate(${currentX/2}px, ${currentY/2}px)`;
-  }
-  function onUp() {
-    document.removeEventListener("mousemove", onMove);
-    document.removeEventListener("mouseup", onUp);
-  }
-  document.addEventListener("mousemove", onMove);
-  document.addEventListener("mouseup", onUp);
+    slideshowImg.style.transform = `scale(2) translate(${currentX / 2}px, ${currentY / 2}px)`;
+  };
+
+  const onMouseUp = () => {
+    window.removeEventListener("mousemove", onMouseMove);
+    window.removeEventListener("mouseup", onMouseUp);
+  };
+
+  window.addEventListener("mousemove", onMouseMove);
+  window.addEventListener("mouseup", onMouseUp);
 });
 
+// ✅ Pan drag (touch)
 slideshowImg.addEventListener("touchstart", (e) => {
   if (!isZoomed) return;
-  const t = e.touches[0];
-  startX = t.clientX - currentX;
-  startY = t.clientY - currentY;
-  function onMove(ev) {
-    const tt = ev.touches[0];
-    currentX = tt.clientX - startX;
-    currentY = tt.clientY - startY;
-    slideshowImg.style.transform = `scale(2) translate(${currentX/2}px, ${currentY/2}px)`;
-  }
-  function onEnd() {
-    document.removeEventListener("touchmove", onMove);
-    document.removeEventListener("touchend", onEnd);
-  }
-  document.addEventListener("touchmove", onMove);
-  document.addEventListener("touchend", onEnd);
+  const touch = e.touches[0];
+  startX = touch.clientX - currentX;
+  startY = touch.clientY - currentY;
+
+  const onTouchMove = (ev) => {
+    const t = ev.touches[0];
+    currentX = t.clientX - startX;
+    currentY = t.clientY - startY;
+    slideshowImg.style.transform = `scale(2) translate(${currentX / 2}px, ${currentY / 2}px)`;
+  };
+
+  const onTouchEnd = () => {
+    window.removeEventListener("touchmove", onTouchMove);
+    window.removeEventListener("touchend", onTouchEnd);
+  };
+
+  window.addEventListener("touchmove", onTouchMove);
+  window.addEventListener("touchend", onTouchEnd);
 });
