@@ -120,6 +120,33 @@ slideshowImg.addEventListener("dblclick", () => {
     currentX = currentY = 0;
   }
 });
+/* ---------------- Pinch Zoom (touch) ---------------- */
+let initialDistance = 0;
+let pinchScale = 1;
+
+slideshowImg.addEventListener("touchstart", (e) => {
+  if (e.touches.length === 2) {
+    // two fingers = pinch gesture
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    initialDistance = Math.sqrt(dx * dx + dy * dy);
+  }
+});
+
+slideshowImg.addEventListener("touchmove", (e) => {
+  if (e.touches.length === 2) {
+    e.preventDefault(); // stop page zoom
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (initialDistance > 0) {
+      pinchScale = distance / initialDistance;
+      slideshowImg.style.transform = `scale(${pinchScale}) translate(${currentX / 2}px, ${currentY / 2}px)`;
+      isZoomed = pinchScale > 1.1; // treat >1.1 as zoomed
+    }
+  }
+});
 
 // ✅ Pan drag (mouse)
 slideshowImg.addEventListener("mousedown", (e) => {
