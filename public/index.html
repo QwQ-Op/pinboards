@@ -2,34 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PinBoards Gallery</title>
-  <link rel="stylesheet" href="/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🌠✨💕✨🌠</title>
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <!-- Lock Screen -->
-  <div id="lock-screen">
-    <h2>🔒 Enter Password</h2>
-    <input type="password" id="password-input" placeholder="Password"/>
-    <button id="login-btn">Enter</button>
-    <p id="error-msg" style="display:none;color:red;">Wrong password!</p>
+  <!-- Password Gate -->
+  <div id="lock-screen" class="center">
+    <div class="card panel">
+      <h2>🔒 Enter Password</h2>
+      <input id="password-input" type="password" class="input" placeholder="Password" />
+      <button id="login-btn" class="btn primary">Enter</button>
+      <p id="error-msg" class="error" style="display:none;">Wrong password</p>
+    </div>
   </div>
 
-  <!-- Main App -->
+  <!-- App -->
   <div id="app" style="display:none;">
-    <h1>🌠✨ PinBoards Viewer ✨🌠</h1>
+    <header class="header">
+      <h1>🌠✨ PinBoards Viewer ✨🌠</h1>
+      <div class="controls">
+        <button id="json1-btn" class="btn">JSON 1</button>
+        <button id="json2-btn" class="btn">JSON 2</button>
+      </div>
+    </header>
 
-    <div class="controls">
-      <button id="json1-btn">Load JSON 1</button>
-      <button id="json2-btn">Load JSON 2</button>
-    </div>
-
-    <div class="gallery" id="gallery"></div>
+    <main>
+      <div id="gallery" class="gallery"></div>
+    </main>
 
     <!-- Slideshow -->
     <div id="slideshow-overlay" class="overlay">
-      <img id="slideshow-img" src="" alt="">
-      <div>
+      <img id="slideshow-img" alt="" />
+      <div class="slideshow-controls">
         <button id="prev-btn" class="btn">Prev</button>
         <button id="next-btn" class="btn">Next</button>
         <button id="close-slide-btn" class="btn">Close</button>
