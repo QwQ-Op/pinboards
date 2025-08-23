@@ -59,13 +59,23 @@ function renderGallery() {
       <img loading="lazy" src="${item.cover}" alt="${item.model}">
       <div class="info">
         <div>${item.model || ""}</div>
-        ${item.photoset ? `<a href="${item.photoset}" target="_blank" rel="noopener">View</a>` : ""}
+        ${item.photoset ? `<a href="${item.photoset}" target="_blank" rel="noopener" id="photoset-link-${index}">View</a>` : ""}
       </div>
     `;
+    
+    // Attach event listener to the card's image for the slideshow
     card.querySelector("img").addEventListener("click", () => openSlideshow(index));
+    
+    // Make sure the View link gets the right photoset URL
+    const photosetLink = card.querySelector(`#photoset-link-${index}`);
+    if (photosetLink) {
+      photosetLink.href = item.photoset; // Ensure it gets the right photoset URL
+    }
+
     gallery.appendChild(card);
   });
 }
+
 
 document.getElementById("json1-btn").addEventListener("click", () => loadGallery(JSON1_URL));
 document.getElementById("json2-btn").addEventListener("click", () => loadGallery(JSON2_URL));
